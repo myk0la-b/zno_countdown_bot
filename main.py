@@ -83,7 +83,8 @@ def inline(bot, update):
     )
     resId += 1
 
-    img = Image.open('bear.webp')
+    img = Image.open('beary.webp')
+    # img = Image.open('beary.webp')
     draw = ImageDraw.Draw(img)
     font = ImageFont.truetype('impact.ttf', size=100)
 
