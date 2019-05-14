@@ -15,7 +15,7 @@ import os
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
-CHAT_ID_ME = os.getenv('CHAT_ID_ME')
+CHAT_ID_ME = int(os.getenv('CHAT_ID_ME'))
 ZNO_DATE = datetime.strptime(os.getenv('ZNO_DATE_ISO_STR'), '%Y-%m-%d')
 
 
