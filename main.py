@@ -37,7 +37,6 @@ def hello(bot, update):
 
 
 def inline(bot, update):
-    print("hello!")
     global resId
     delta = ZNO_DATE - datetime.today()
     days = delta.days
