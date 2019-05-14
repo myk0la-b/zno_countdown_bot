@@ -45,7 +45,7 @@ def inline(bot, update):
     # day_eng = list()
     day_ukr = list(['днів', 'день', 'дні', 'дні', 'дні', 'днів', 'днів', 'днів', 'днів', 'днів'])
 
-    warn_rus = list(['Берегись', 'Осторожнее', 'Спасайся', 'Беги', 'Учись', 'Пора'])
+    warn_rus = list(['Берегись', 'Осторожнее', 'Спасайся', 'Беги', 'Учись', 'Пора', 'А мама говорила'])
     warn_ukr = list(['Тікай у село', 'Обережніше', 'Рятуйся', 'Ну ЗНУ це теж ЗВО', 'Починай готуватися', 'Готуй бабки',
                      'Солдат. Звучить не так і погано', 'Батько тебе породив, він тебе і вб\'є'])
 
@@ -86,7 +86,7 @@ def inline(bot, update):
         print('IOError')
 
     draw = ImageDraw.Draw(img)
-    font = ImageFont.truetype('impact.ttf', size=100)
+    font = ImageFont.truetype('MPLUSRounded1c-Medium.ttf', size=100)
 
     line_max_length = 21
     res_text = ''
