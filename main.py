@@ -31,6 +31,7 @@ except FileNotFoundError:
     f = open('ids.cnf', 'w')
     resId = 0
     f.write(str(resId))
+    f.close()
 
 
 def hello(bot, update):
