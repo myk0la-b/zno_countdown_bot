@@ -15,11 +15,17 @@ import os
 
 load_dotenv()
 TOKEN = os.getenv('TOKEN')
+TOKEN_DPA = os.getenv('TOKEN_DPA')
 CHAT_ID_ME = int(os.getenv('CHAT_ID_ME'))
+CHAT_ID_ME_DPA = int(os.getenv('CHAT_ID_ME_DPA'))
 ZNO_DATE_MATH = datetime.strptime(os.getenv('ZNO_DATE_MATH_ISO_STR'), '%Y-%m-%d')
 ZNO_DATE_UKR = datetime.strptime(os.getenv('ZNO_DATE_UKR_ISO_STR'), '%Y-%m-%d')
 ZNO_DATE_ENG = datetime.strptime(os.getenv('ZNO_DATE_ENG_ISO_STR'), '%Y-%m-%d')
 ZNO_DATE_PHYSICS = datetime.strptime(os.getenv('ZNO_DATE_PHYSICS_ISO_STR'), '%Y-%m-%d')
+DPA_DATE_UKR = datetime.strptime(os.getenv('DPA_DATE_UKR'), '%Y-%m-%d')
+DPA_DATE_MATH = datetime.strptime(os.getenv('DPA_DATE_MATH'), '%Y-%m-%d')
+DPA_DATE_ENG = datetime.strptime(os.getenv('DPA_DATE_ENG'), '%Y-%m-%d')
+
 
 try:
     f = open('ids.cnf', 'r')
@@ -100,28 +106,12 @@ def inline(bot, update):
         warn_num = randint(0, warn_rus.__len__())
         result = 'До ЗНО осталось {} {}. {}.'.format(days_ukr, day_rus[days_ukr % 20], warn_rus[warn_num])
 
-    query_result_rus = InlineQueryResultArticle(
-        id='{}'.format(resId),
-        title='Countdown Russian',
-        input_message_content=InputTextMessageContent(
-            message_text=result
-        )
-    )
     resId += 1
 
     result = 'До ЗНО з математики залишилось {} {}, а ти {}.'.format(days_math, day_ukr[days_math % 20], text)
     if text == '':
         warn_num = randint(0, warn_ukr.__len__())
         result = 'До ЗНО з математики залишилось {} {}. {}.'.format(days_math, day_ukr[days_math % 20], warn_ukr[warn_num])
-
-    query_result_ukr_math = InlineQueryResultArticle(
-        id='{}'.format(resId),
-        title='Зворотній відлік математика',
-        input_message_content=InputTextMessageContent(
-            message_text=result
-        )
-    )
-    resId += 1
 
     id_math = get_sticker_id_with_text(bot, result)
     query_result_sticker_math = InlineQueryResultCachedSticker(type='sticker', id=resId, sticker_file_id=id_math)
@@ -132,14 +122,6 @@ def inline(bot, update):
         warn_num = randint(0, warn_ukr.__len__())
         result = 'До ЗНО з української залишилось {} {}. {}.'.format(days_ukr, day_ukr[days_ukr % 20],
                                                                      warn_ukr[warn_num])
-    query_result_ukr_ukr = InlineQueryResultArticle(
-        id='{}'.format(resId),
-        title='Зворотній відлік українська',
-        input_message_content=InputTextMessageContent(
-            message_text=result
-        )
-    )
-    resId += 1
 
     id_ukr = get_sticker_id_with_text(bot, result)
     query_result_sticker_ukr = InlineQueryResultCachedSticker(type='sticker', id=resId, sticker_file_id=id_ukr)
@@ -153,14 +135,6 @@ def inline(bot, update):
         warn_num = randint(0, warn_ukr.__len__())
         result = 'До ЗНО з англійської залишилось {} {}. {}.'.format(days_eng, day_ukr[days_eng % 20],
                                                                      warn_ukr[warn_num])
-    query_result_ukr_eng = InlineQueryResultArticle(
-        id='{}'.format(resId),
-        title='Зворотній відлік англійська',
-        input_message_content=InputTextMessageContent(
-            message_text=result
-        )
-    )
-    resId += 1
 
     id_ukr = get_sticker_id_with_text(bot, result)
     query_result_sticker_eng = InlineQueryResultCachedSticker(type='sticker', id=resId, sticker_file_id=id_ukr)
@@ -174,28 +148,84 @@ def inline(bot, update):
         warn_num = randint(0, warn_ukr.__len__())
         result = 'До ЗНО з фізики залишилось {} {}. {}.'.format(days_physics, day_ukr[days_physics % 20],
                                                                      warn_ukr[warn_num])
-    query_result_ukr_physics = InlineQueryResultArticle(
-        id='{}'.format(resId),
-        title='Зворотній відлік фізика',
-        input_message_content=InputTextMessageContent(
-            message_text=result
-        )
-    )
-    resId += 1
 
     id_ukr = get_sticker_id_with_text(bot, result)
     query_result_sticker_physics = InlineQueryResultCachedSticker(type='sticker', id=resId, sticker_file_id=id_ukr)
     resId += 1
 
-    update.inline_query.answer(results=list([query_result_rus,
-                                             query_result_ukr_math,
-                                             query_result_ukr_ukr,
-                                             query_result_ukr_eng,
-                                             query_result_ukr_physics,
-                                             query_result_sticker_math,
+    update.inline_query.answer(results=list([query_result_sticker_math,
                                              query_result_sticker_ukr,
                                              query_result_sticker_eng,
                                              query_result_sticker_physics]),
+                               cache_time=0,
+                               is_personal=True)
+
+    f = open('ids.cnf', 'w')
+    f.write(str(resId))
+    f.close()
+
+
+def inline_dpa(bot, update):
+    global resId
+    delta_ukr = DPA_DATE_UKR - datetime.today()
+    delta_math = DPA_DATE_MATH - datetime.today()
+    delta_eng = DPA_DATE_ENG - datetime.today()
+    days_ukr = delta_ukr.days
+    days_math = delta_math.days
+    days_eng = delta_eng.days
+
+    day_rus = list(
+        ['дней', 'день', 'дня', 'дня', 'дня', 'дней', 'дней', 'дней', 'дней', 'дней', 'дней', 'дней', 'дней', 'дней',
+         'дней', 'дней', 'дней', 'дней', 'дней', 'дней', 'дней'])
+    # soon
+    # day_eng = list()
+    day_ukr = list(
+        ['днів', 'день', 'дні', 'дні', 'дні', 'днів', 'днів', 'днів', 'днів', 'днів', 'днів', 'днів', 'днів', 'днів',
+         'днів', 'днів', 'днів', 'днів', 'днів', 'днів', 'днів'])
+
+    warn_rus = list(['Берегись', 'Осторожнее', 'Спасайся', 'Беги', 'Учись', 'Пора', 'А мама говорила'])
+    warn_ukr = list(['Тікай у село', 'Обережніше', 'Рятуйся', 'Починай готуватися',
+                     'Солдат. Звучить не так і погано', 'Батько тебе породив, він тебе і вб\'є',
+                     'А мама казала', 'Дурко!)0)', 'А нікіта ще не готовий. Пхпзахфс'])
+
+    text = update.inline_query.query
+
+    result = 'До ДПА з математики залишилось: {} {}, {}.'.format(days_math, day_ukr[days_math % 20], text)
+    if text == '':
+        warn_num = randint(0, warn_ukr.__len__())
+        result = 'До ДПА з математики залишилось: {} {}. {}.'.format(days_math, day_ukr[days_math % 20],
+                                                                     warn_ukr[warn_num])
+
+    id_math = get_sticker_id_with_text(bot, result)
+    query_result_sticker_math = InlineQueryResultCachedSticker(type='sticker', id=resId, sticker_file_id=id_math)
+    resId += 1
+
+    result = 'До ДПА з української залишилось: {} {}, {}.'.format(days_ukr, day_ukr[days_ukr % 20], text)
+    if text == '':
+        warn_num = randint(0, warn_ukr.__len__())
+        result = 'До ДПА з української залишилось: {} {}. {}.'.format(days_ukr, day_ukr[days_ukr % 20],
+                                                                     warn_ukr[warn_num])
+
+    id_ukr = get_sticker_id_with_text(bot, result)
+    query_result_sticker_ukr = InlineQueryResultCachedSticker(type='sticker', id=resId, sticker_file_id=id_ukr)
+    resId += 1
+
+    #
+    # English
+    #
+    result = 'До ДПА з англійської залишилось: {} {}, {}.'.format(days_eng, day_ukr[days_eng % 20], text)
+    if text == '':
+        warn_num = randint(0, warn_ukr.__len__())
+        result = 'До ДПА з англійської залишилось: {} {}. {}.'.format(days_eng, day_ukr[days_eng % 20],
+                                                                     warn_ukr[warn_num])
+
+    id_ukr = get_sticker_id_with_text(bot, result)
+    query_result_sticker_eng = InlineQueryResultCachedSticker(type='sticker', id=resId, sticker_file_id=id_ukr)
+    resId += 1
+
+    update.inline_query.answer(results=list([query_result_sticker_eng,
+                                             query_result_sticker_math,
+                                             query_result_sticker_ukr]),
                                cache_time=0,
                                is_personal=True)
 
@@ -209,6 +239,14 @@ updater = Updater(bot=zno_countdownbot)
 
 updater.dispatcher.add_handler(CommandHandler('hello', hello))
 updater.dispatcher.add_handler(InlineQueryHandler(inline))
+# updater.start_polling()
+# updater.idle()
 
-updater.start_polling()
-updater.idle()
+dpa_hbot = Bot(token=TOKEN_DPA)
+updater_dpa = Updater(bot=dpa_hbot)
+
+updater_dpa.dispatcher.add_handler(CommandHandler('hello', hello))
+updater_dpa.dispatcher.add_handler(InlineQueryHandler(inline_dpa))
+
+updater_dpa.start_polling()
+updater_dpa.idle()
